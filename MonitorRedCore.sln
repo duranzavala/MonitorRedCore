@@ -1,0 +1,47 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorRedCore.API", "MonitorRedCore.API\MonitorRedCore.API.csproj", "{87A7FC38-6BA9-4128-81FD-12C248FE676B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorRedCore.Core", "MonitorRedCore.Core\MonitorRedCore.Core.csproj", "{1844260B-92A7-4922-8555-6826CD31F927}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorRedCore.Infraestructure", "MonitorRedCore.Infraestructure\MonitorRedCore.Infraestructure.csproj", "{28FDFAFA-3EE3-461F-A72A-B75B152589E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{17D663E1-E876-42E2-992C-250070104351}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorRedCoreUnitTests", "MonitorRedCoreUnitTests\MonitorRedCoreUnitTests.csproj", "{C6D337D6-D9F0-4FA0-B7B8-65BE20F51273}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorRedCoreIntegrationTest", "MonitorRedCoreUnitTests\MonitorRedCoreIntegrationTest\MonitorRedCoreIntegrationTest.csproj", "{2284DB1A-E900-4C03-B740-397852398254}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87A7FC38-6BA9-4128-81FD-12C248FE676B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87A7FC38-6BA9-4128-81FD-12C248FE676B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87A7FC38-6BA9-4128-81FD-12C248FE676B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87A7FC38-6BA9-4128-81FD-12C248FE676B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1844260B-92A7-4922-8555-6826CD31F927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1844260B-92A7-4922-8555-6826CD31F927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1844260B-92A7-4922-8555-6826CD31F927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1844260B-92A7-4922-8555-6826CD31F927}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28FDFAFA-3EE3-461F-A72A-B75B152589E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28FDFAFA-3EE3-461F-A72A-B75B152589E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28FDFAFA-3EE3-461F-A72A-B75B152589E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28FDFAFA-3EE3-461F-A72A-B75B152589E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6D337D6-D9F0-4FA0-B7B8-65BE20F51273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6D337D6-D9F0-4FA0-B7B8-65BE20F51273}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6D337D6-D9F0-4FA0-B7B8-65BE20F51273}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6D337D6-D9F0-4FA0-B7B8-65BE20F51273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2284DB1A-E900-4C03-B740-397852398254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2284DB1A-E900-4C03-B740-397852398254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2284DB1A-E900-4C03-B740-397852398254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2284DB1A-E900-4C03-B740-397852398254}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C6D337D6-D9F0-4FA0-B7B8-65BE20F51273} = {17D663E1-E876-42E2-992C-250070104351}
+		{2284DB1A-E900-4C03-B740-397852398254} = {17D663E1-E876-42E2-992C-250070104351}
+	EndGlobalSection
+EndGlobal
