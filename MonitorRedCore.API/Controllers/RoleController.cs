@@ -17,8 +17,8 @@ namespace MonitorRedCore.API.Controllers
         [HttpGet]
         public IActionResult GetRoles()
         {
-            var users = _roleRepository.GetRoles();
-            return Ok(null);
+            var roles = _roleRepository.GetRoles();
+            return Ok(roles);
         }
     }
 }

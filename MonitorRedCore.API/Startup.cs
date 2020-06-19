@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonitorRedCore.Core.Interfaces;
-using MonitorRedCore.Infraestructure.Models;
+using MonitorRedCore.Infraestructure.Data;
 using MonitorRedCore.Infraestructure.Repositories;
 
 namespace MonitorRedCore.API
@@ -23,12 +23,12 @@ namespace MonitorRedCore.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IRoleRepository, RoleRepository>();
 
             services.AddDbContext<MONITOREDContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LocalHost"))
             );
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

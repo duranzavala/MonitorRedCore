@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Models;
-using MonitorRedCore.Infraestructure.Models;
+using MonitorRedCore.Infraestructure.Data;
 
 namespace MonitorRedCore.Infraestructure.Repositories
 {
