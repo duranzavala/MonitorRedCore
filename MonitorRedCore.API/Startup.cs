@@ -24,9 +24,7 @@ namespace MonitorRedCore.API
         {
             services.AddControllers();
 
-            services.AddDbContext<MONITOREDContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LocalHost"))
-            );
+            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["LocalConnectionString"]));
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
         }

@@ -16,9 +16,9 @@ namespace MonitorRedCore.Infraestructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Role>> GetRoles()
+        public IList<Role> GetRoles()
         {
-            var roles = await _context.Role.ToListAsync();
+            var roles = _context.Role.ToListAsync().Result;
 
             return roles;
         }

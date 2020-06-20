@@ -6,6 +6,6 @@ namespace MonitorRedCore.Core.Interfaces
 {
     public interface IRoleRepository
     {
-        Task<IEnumerable<Role>> GetRoles();
+        IList<Role> GetRoles();
     }
 }
