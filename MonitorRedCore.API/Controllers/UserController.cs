@@ -18,7 +18,7 @@ namespace MonitorRedCore.API.Controllers
         public IActionResult GetUsers()
         {
             var users = _userRepository.GetUsers();
-            return Ok(null);
+            return Ok(users);
         }
     }
 }
