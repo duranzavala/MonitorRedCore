@@ -16,9 +16,9 @@ namespace MonitorRedCore.Infraestructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Users>> GetUsers()
+        public IList<Users> GetUsers()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = _context.Users.ToListAsync().Result;
 
             return users;
         }

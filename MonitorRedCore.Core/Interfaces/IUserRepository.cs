@@ -6,6 +6,6 @@ namespace MonitorRedCore.Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<Users>> GetUsers();
+        IList<Users> GetUsers();
     }
 }
