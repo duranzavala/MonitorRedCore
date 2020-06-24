@@ -7,5 +7,7 @@ namespace MonitorRedCore.Core.Interfaces
     public interface IUserRepository
     {
         IList<Users> GetUsers();
+        Users GetUser(string email);
+        Task RegisterUser(Users user);
     }
 }
