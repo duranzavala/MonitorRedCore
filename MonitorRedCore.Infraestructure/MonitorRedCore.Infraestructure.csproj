@@ -9,6 +9,7 @@
     <Folder Include="Repositories\" />
     <Folder Include="Filters\" />
     <Folder Include="Data\Configuration\" />
+    <Folder Include="Mappings\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonitorRedCore.Core\MonitorRedCore.Core.csproj" />
@@ -23,5 +24,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
 </Project>
