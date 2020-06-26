@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
-using MonitorRedCore.Core.Models;
 
 namespace MonitorRedCore.API.Controllers
 {
@@ -12,40 +10,49 @@ namespace MonitorRedCore.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpGet]
         public IActionResult GetUsers()
         {
-            var users = _userRepository.GetUsers();
-            var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
+            var usersDto = _userService.GetUsers();
 
             return Ok(usersDto);
         }
 
-        [HttpGet("{email}")]
-        public IActionResult GetUser(string email)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUser(int id)
         {
-            var user = _userRepository.GetUser(email);
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = await _userService.GetUser(id);
+            ApiResponse<UserDto> response = new ApiResponse<UserDto>(userDto);
 
-            return Ok(userDto);
+            if (response.Data != null)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUserAsync(UserDto userDto)
+        public async Task<IActionResult> RegisterUser(UserDto userDto)
         {
-            var user = _mapper.Map<Users>(userDto);
-            await _userRepository.RegisterUser(user);
+            var result = await _userService.RegisterUser(userDto);
 
-            return Ok(user);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RegisterUserAsync(int id)
+        {
+            var result = await _userService.DeleteUser(id);
+
+            return Ok(result);
         }
     }
 }

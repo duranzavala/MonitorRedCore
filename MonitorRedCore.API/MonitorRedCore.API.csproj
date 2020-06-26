@@ -21,4 +21,7 @@
     </PackageReference>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Responses\" />
+  </ItemGroup>
 </Project>

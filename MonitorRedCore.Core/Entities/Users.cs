@@ -1,8 +1,9 @@
-﻿namespace MonitorRedCore.Core.Models
+﻿using MonitorRedCore.Core.Entities;
+
+namespace MonitorRedCore.Core.Models
 {
-    public partial class Users
+    public partial class Users : BaseEntity
     {
-        public int IdUser { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }

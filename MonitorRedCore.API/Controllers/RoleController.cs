@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
-using MonitorRedCore.Core.Models;
 
 namespace MonitorRedCore.API.Controllers
 {
@@ -12,40 +10,49 @@ namespace MonitorRedCore.API.Controllers
     [ApiController]
     public class RoleController : Controller
     {
-        private readonly IRoleRepository _roleRepository;
-        private readonly IMapper _mapper;
+        private readonly IRoleService _roleService;
 
-        public RoleController(IRoleRepository roleRepository, IMapper mapper)
+        public RoleController(IRoleService roleService)
         {
-            _roleRepository = roleRepository;
-            _mapper = mapper;
+            _roleService = roleService;
         }
 
         [HttpGet]
         public IActionResult GetRoles()
         {
-            var roles = _roleRepository.GetRoles();
-            var rolesDto = _mapper.Map<IEnumerable<RoleDto>>(roles);
+            var rolesDto = _roleService.GetRoles();
 
             return Ok(rolesDto);
         }
 
-        [HttpGet("{roleType}")]
-        public IActionResult GetRole(string roleType)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRole(int id)
         {
-            var role = _roleRepository.GetRole(roleType);
-            var roleDto = _mapper.Map<RoleDto>(role);
+            var roleDto = await _roleService.GetRole(id);
+            ApiResponse<RoleDto> response = new ApiResponse<RoleDto>(roleDto);
 
-            return Ok(roleDto);
+            if (response.Data != null)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpPost]
         public async Task<IActionResult> RegisterRole(RoleDto roleDto)
         {
-            var role = _mapper.Map<Role>(roleDto);
-            await _roleRepository.RegisterRole(role);
+            var result = await _roleService.RegisterRole(roleDto);
 
-            return Ok(role);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRole(int id)
+        {
+            var result = await _roleService.DeleteRole(id);
+
+            return Ok(result);
         }
     }
 }

@@ -8,10 +8,8 @@ namespace MonitorRedCore.Infraestructure.Mappings
     {
         public AutomapperProfile()
         {
-            CreateMap<Users, UserDto>();
-            CreateMap<UserDto, Users>();
-            CreateMap<Role, RoleDto>();
-            CreateMap<RoleDto, Role>();
+            CreateMap<Users, UserDto>().ReverseMap();
+            CreateMap<Role, RoleDto>().ReverseMap();
         }
     }
 }
