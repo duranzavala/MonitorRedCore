@@ -9,5 +9,6 @@ namespace MonitorRedCore.Core.Interfaces
         IList<Role> GetRoles();
         Role GetRole(string roleType);
         Task RegisterRole(Role role);
+        Task<bool> DeleteRole(string roleType);
     }
 }
