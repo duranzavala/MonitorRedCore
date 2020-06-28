@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MonitorRedCore.Core.DTOs;
+using MonitorRedCore.Core.Exceptions;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Models;
 
@@ -26,7 +27,7 @@ namespace MonitorRedCore.Core.Services
 
             if (role == null)
             {
-                throw new Exception($"There isn't a role with ID: {id}");
+                throw new BusinessException($"There isn't a role with ID: {id}");
             }
 
             var roleDto = _mapper.Map<RoleDto>(role);
@@ -49,7 +50,7 @@ namespace MonitorRedCore.Core.Services
 
             if (roleExist != null)
             {
-                throw new Exception("The role already exist");
+                throw new BusinessException("The role already exist");
             }
 
             var role = _mapper.Map<Role>(roleDto);
@@ -65,7 +66,7 @@ namespace MonitorRedCore.Core.Services
 
             if (roleExist == null)
             {
-                throw new Exception("The role doesn't exist");
+                throw new BusinessException("The role doesn't exist");
             }
 
             await _unitOfWork.RoleRepository.Delete(id);
