@@ -1,4 +1,6 @@
 ﻿using System;
+using MonitorRedCore.Core.CustomEntities;
+
 namespace MonitorRedCore.API.Responses
 {
     public class ApiResponse<T>
@@ -9,5 +11,7 @@ namespace MonitorRedCore.API.Responses
         }
 
         public T Data { get; set; }
+
+        public Metadata Meta { get; set; }
     }
 }

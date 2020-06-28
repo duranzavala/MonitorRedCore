@@ -11,6 +11,8 @@
     <Folder Include="Data\Configuration\" />
     <Folder Include="Mappings\" />
     <Folder Include="Validators\" />
+    <Folder Include="Services\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonitorRedCore.Core\MonitorRedCore.Core.csproj" />
