@@ -7,8 +7,9 @@
   <ItemGroup>
     <Folder Include="DTOs\" />
     <Folder Include="Enumerations\" />
-    <Folder Include="Exceptions\" />
     <Folder Include="Services\" />
+    <Folder Include="QueryFilters\" />
+    <Folder Include="CustomEntities\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />

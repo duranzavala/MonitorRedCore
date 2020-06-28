@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Models;
+using MonitorRedCore.Core.QueryFilters;
 
 namespace MonitorRedCore.Core.Services
 {
@@ -33,12 +36,30 @@ namespace MonitorRedCore.Core.Services
             return userDto;
         }
 
-        public IEnumerable<UserDto> GetUsers()
+        public PagedList<UserDto> GetUsers(UserQueryFilter filters)
         {
             var users = _unitOfWork.UserRepository.GetAll();
+
+            if (filters.FirstName != null)
+            {
+                users = users.Where(x => x.FirstName.ToLower() == filters.FirstName.ToLower());
+            }
+            if (filters.Role != null)
+            {
+                var role = _unitOfWork.RoleRepository.GetAll().FirstOrDefault(x => x.RoleType.ToLower() == filters.Role.ToLower());
+                users = users.Where(x => x.Role == role.Id);
+            }
+            if (filters.Email != null)
+            {
+                users = users.Where(x => x.Email.ToLower() == filters.Email.ToLower());
+            }
+
             var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
 
-            return usersDto;
+            var pagedUsers = PagedList<UserDto>.Create(usersDto, filters.PageNumber, filters.PageSize);
+            
+
+            return pagedUsers;
         }
 
         public async Task<bool> RegisterUser(UserDto userDto)
