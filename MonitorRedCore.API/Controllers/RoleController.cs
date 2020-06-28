@@ -6,6 +6,7 @@ using MonitorRedCore.Core.Interfaces;
 
 namespace MonitorRedCore.API.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : Controller
@@ -17,6 +18,10 @@ namespace MonitorRedCore.API.Controllers
             _roleService = roleService;
         }
 
+        /// <summary>
+        /// Retrieve all roles
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetRoles()
         {
@@ -25,6 +30,11 @@ namespace MonitorRedCore.API.Controllers
             return Ok(rolesDto);
         }
 
+        /// <summary>
+        /// Retrieve specific role
+        /// </summary>
+        /// <param name="id">Role id to retrieve it</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRole(int id)
         {
@@ -39,6 +49,11 @@ namespace MonitorRedCore.API.Controllers
             return BadRequest(response);
         }
 
+        /// <summary>
+        /// Register a role
+        /// </summary>
+        /// <param name="roleDto">Model with the required information to register a role</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> RegisterRole(RoleDto roleDto)
         {
@@ -47,6 +62,11 @@ namespace MonitorRedCore.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Delete a role
+        /// </summary>
+        /// <param name="id">Role id to delete it</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(int id)
         {

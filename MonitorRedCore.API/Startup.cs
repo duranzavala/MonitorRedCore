@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Services;
@@ -56,6 +59,15 @@ namespace MonitorRedCore.API
                 return new UriService(absoluteUri);
             });
 
+            services.AddSwaggerGen(doc =>
+            {
+                doc.SwaggerDoc("v1", new OpenApiInfo { Title = "MonitorRed API", Version = "v1"});
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                doc.IncludeXmlComments(xmlPath);
+            });
+
             services.AddMvc(options =>
             {
                 options.Filters.Add<ValidationFilter>();
@@ -75,6 +87,13 @@ namespace MonitorRedCore.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "MonitorRed API V1");
+                options.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 

@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 
 namespace MonitorRedCore.API.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -24,6 +25,11 @@ namespace MonitorRedCore.API.Controllers
             _uriService = uriService;
         }
 
+        /// <summary>
+        /// Retrieve all users
+        /// </summary>
+        /// <param name="filters">Filter to apply</param>
+        /// <returns></returns>
         [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
@@ -51,6 +57,11 @@ namespace MonitorRedCore.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Retrieve specific user
+        /// </summary>
+        /// <param name="id">User id to retrieve it</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -65,6 +76,11 @@ namespace MonitorRedCore.API.Controllers
             return BadRequest(response);
         }
 
+        /// <summary>
+        /// Register a user
+        /// </summary>
+        /// <param name="userDto">Model with the required information to register a user</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> RegisterUser(UserDto userDto)
         {
@@ -74,8 +90,13 @@ namespace MonitorRedCore.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Delete a user
+        /// </summary>
+        /// <param name="id">User id to delete it</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RegisterUserAsync(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _userService.DeleteUser(id);
             var response = new ApiResponse<bool>(result);
