@@ -3,15 +3,19 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Services;
 using MonitorRedCore.Infraestructure.Data;
 using MonitorRedCore.Infraestructure.Filters;
+using MonitorRedCore.Infraestructure.Interfaces;
 using MonitorRedCore.Infraestructure.Repositories;
+using MonitorRedCore.Infraestructure.Services;
 
 namespace MonitorRedCore.API
 {
@@ -30,8 +34,12 @@ namespace MonitorRedCore.API
             services.AddControllers(options =>
             {
                 options.Filters.Add<GlobalExceptionFilter>();
+            }).AddNewtonsoftJson((options) =>
+            {
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
 
             services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["LocalConnectionString"]));
 
@@ -39,6 +47,14 @@ namespace MonitorRedCore.API
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddSingleton<IUriService>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+
+                return new UriService(absoluteUri);
+            });
 
             services.AddMvc(options =>
             {

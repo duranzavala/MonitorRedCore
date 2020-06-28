@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MonitorRedCore.API.Responses;
+using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.QueryFilters;
+using MonitorRedCore.Infraestructure.Interfaces;
 using Newtonsoft.Json;
 
 namespace MonitorRedCore.API.Controllers
@@ -14,26 +16,34 @@ namespace MonitorRedCore.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IUriService _uriService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IUriService uriService)
         {
             _userService = userService;
+            _uriService = uriService;
         }
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
             var usersDto = _userService.GetUsers(filters);
-            var response = new ApiResponse<IEnumerable<UserDto>>(usersDto);
 
-            var metadata = new
+            var metadata = new Metadata
             {
-                usersDto.TotalCount,
-                usersDto.PageSize,
-                usersDto.CurrentPage,
-                usersDto.TotalPage,
-                usersDto.HasNextPage,
-                usersDto.HasPreviousPage
+                TotalCount = usersDto.TotalCount,
+                PageSize = usersDto.PageSize,
+                CurrentPage = usersDto.CurrentPage,
+                TotalPage = usersDto.TotalPage,
+                HasNextPage = usersDto.HasNextPage,
+                HasPreviousPage = usersDto.HasPreviousPage,
+                NextPageUrl = _uriService.GetUsersPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString(),
+                PreviousPageUrl = _uriService.GetUsersPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString()
+            };
+
+            var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
+            {
+                Meta = metadata
             };
 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));

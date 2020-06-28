@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Exceptions;
@@ -16,11 +16,14 @@ namespace MonitorRedCore.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly PaginationOptions _paginationOptions;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<PaginationOptions> options)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _paginationOptions = options.Value;
         }
 
         public async Task<UserDto> GetUser(int id)
@@ -39,6 +42,9 @@ namespace MonitorRedCore.Core.Services
 
         public PagedList<UserDto> GetUsers(UserQueryFilter filters)
         {
+            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
+            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
+
             var users = _unitOfWork.UserRepository.GetAll();
 
             if (filters.FirstName != null)
