@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using MonitorRedCore.Core.DTOs;
+using MonitorRedCore.Core.Exceptions;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Models;
 
@@ -25,7 +26,7 @@ namespace MonitorRedCore.Core.Services
 
             if (user == null)
             {
-                throw new Exception($"There isn't a user with ID: {id}");
+                throw new BusinessException($"There isn't a user with ID: {id}");
             }
 
             var userDto = _mapper.Map<UserDto>(user);
@@ -47,7 +48,7 @@ namespace MonitorRedCore.Core.Services
 
             if (userExist != null)
             {
-                throw new Exception("The user already exist");
+                throw new BusinessException("The user already exist");
             }
 
             var user = _mapper.Map<Users>(userDto);
@@ -63,7 +64,7 @@ namespace MonitorRedCore.Core.Services
 
             if (userExist == null)
             {
-                throw new Exception("The user doesn't exist");
+                throw new BusinessException("The user doesn't exist");
             }
 
             await _unitOfWork.UserRepository.Delete(id);
