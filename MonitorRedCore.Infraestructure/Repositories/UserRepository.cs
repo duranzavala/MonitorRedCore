@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MonitorRedCore.Core.Interfaces;
@@ -7,20 +8,19 @@ using MonitorRedCore.Infraestructure.Data;
 
 namespace MonitorRedCore.Infraestructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : BaseRepository<Users>, IUserRepository
     {
-        private readonly MONITOREDContext _context;
+        public UserRepository(MONITOREDContext context) : base(context) { }
 
-        public UserRepository(MONITOREDContext context)
+        public Users GetUserByEmail(string email)
         {
-            _context = context;
+            var user = _entities.Where(x => x.Email == email).FirstOrDefault();
+            return user;
         }
 
-        public IList<Users> GetUsers()
+        public async Task<IEnumerable<Users>> GetUsersByRole(int roleId)
         {
-            var users = _context.Users.ToListAsync().Result;
-
-            return users;
+            return await _entities.Where(x => x.Role == roleId).ToListAsync();
         }
     }
 }

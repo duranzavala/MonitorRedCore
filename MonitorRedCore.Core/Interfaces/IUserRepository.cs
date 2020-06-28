@@ -4,8 +4,9 @@ using MonitorRedCore.Core.Models;
 
 namespace MonitorRedCore.Core.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<Users>
     {
-        IList<Users> GetUsers();
+        Users GetUserByEmail(string email);
+        Task<IEnumerable<Users>> GetUsersByRole(int roleId);
     }
 }

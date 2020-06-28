@@ -8,10 +8,10 @@ namespace MonitorRedCore.Infraestructure.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Users> builder)
         {
-            builder.HasKey(e => e.IdUser)
+            builder.HasKey(e => e.Id)
                     .HasName("PK__Users__B607F248D3181038");
 
-            builder.Property(e => e.IdUser).HasColumnName("Id_user");
+            builder.Property(e => e.Id).HasColumnName("Id_user");
 
             builder.Property(e => e.Email)
                 .IsRequired()

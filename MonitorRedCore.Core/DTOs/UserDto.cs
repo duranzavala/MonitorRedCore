@@ -1,15 +1,12 @@
-﻿using MonitorRedCore.Core.Entities;
-
-namespace MonitorRedCore.Core.Models
+﻿namespace MonitorRedCore.Core.DTOs
 {
-    public partial class Users : BaseEntity
+    public class UserDto
     {
+        public int Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Role { get; set; }
-
-        public virtual Role RoleNavigation { get; set; }
     }
 }

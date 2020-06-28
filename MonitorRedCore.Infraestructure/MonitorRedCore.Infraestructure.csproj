@@ -9,6 +9,10 @@
     <Folder Include="Repositories\" />
     <Folder Include="Filters\" />
     <Folder Include="Data\Configuration\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="Validators\" />
+    <Folder Include="Services\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonitorRedCore.Core\MonitorRedCore.Core.csproj" />
@@ -23,5 +27,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
   </ItemGroup>
 </Project>

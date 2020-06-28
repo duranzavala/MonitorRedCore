@@ -8,10 +8,10 @@ namespace MonitorRedCore.Infraestructure.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.HasKey(e => e.IdRole)
+            builder.HasKey(e => e.Id)
                     .HasName("PK__Role__46CA8DBE7E5CE900");
 
-            builder.Property(e => e.IdRole).HasColumnName("Id_role");
+            builder.Property(e => e.Id).HasColumnName("Id_role");
 
             builder.Property(e => e.RoleType)
                 .IsRequired()
