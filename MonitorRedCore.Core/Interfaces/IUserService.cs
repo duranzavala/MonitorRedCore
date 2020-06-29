@@ -9,7 +9,7 @@ namespace MonitorRedCore.Core.Interfaces
     {
         Task<UserDto> GetUser(int id);
         PagedList<UserDto> GetUsers(UserQueryFilter filters);
-        Task<bool> RegisterUser(UserDto userDto);
+        Task<bool> SignUp(UserDto userDto);
         Task<bool> DeleteUser(int id);
     }
 }

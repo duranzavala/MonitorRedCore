@@ -8,6 +8,7 @@ namespace MonitorRedCore.Core.Interfaces
     {
         IUserRepository UserRepository { get; }
         IRepository<Role> RoleRepository { get; }
+        IAuthRepository AuthRepository { get; }
 
         void SaveChanges();
 
