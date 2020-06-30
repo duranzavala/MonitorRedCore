@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.DTOs;
@@ -22,6 +23,7 @@ namespace MonitorRedCore.API.Controllers
         /// Retrieve all roles
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public IActionResult GetRoles()
         {

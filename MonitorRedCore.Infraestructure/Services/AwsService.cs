@@ -13,8 +13,6 @@ namespace MonitorRedCore.Infraestructure.Services
         private readonly RegionEndpoint _region = RegionEndpoint.USEast2;
         private readonly AwsOptions _awsOptions;
 
-        public AwsService() { }
-
         public AwsService(IOptions<AwsOptions> options)
         {
             _awsOptions = options.Value;

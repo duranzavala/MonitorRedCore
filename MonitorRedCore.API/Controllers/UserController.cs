@@ -31,7 +31,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="filters">Filter to apply</param>
         /// <returns></returns>
-        //[Authorize]
+        [Authorize]
         [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
@@ -64,7 +64,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="id">User id to retrieve it</param>
         /// <returns></returns>
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {

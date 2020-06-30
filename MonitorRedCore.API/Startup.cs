@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,12 +34,19 @@ namespace MonitorRedCore.API
         }
 
         public IConfiguration Configuration { get; }
-        private AwsOptions AwsOptions { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            CognitoUserPool cognitoUserPool = new CognitoUserPool(
+                "us-east-2_WPoTAC5mP",
+                "38dhaampmunqpg0t1nla7irtt5",
+                new AmazonCognitoIdentityProviderClient(),
+                "1ruevrqlr6vke1kb42re0a4a15rnasicfi69f5jabob781ucuu5u"
+            );
+            services.AddSingleton(cognitoUserPool);
             services.AddCognitoIdentity();
+
             services.AddControllers(options => {
                 options.Filters.Add<GlobalExceptionFilter>();
             })
@@ -68,25 +77,18 @@ namespace MonitorRedCore.API
 
                 return new UriService(absoluteUri);
             });
-            services.AddSingleton<IAwsService, AwsService>();
+            services.AddTransient<IAwsService, AwsService>();
 
-            //services.AddSingleton<IAwsService>(sp =>
-            //{
-            //    var awsService = sp.GetRequiredService<AwsService>().GetAwsOptions().Result;
-            //    AwsOptions.UserPoolClientId = awsService.UserPoolClientId;
-            //    AwsOptions.MetaDataUrl = awsService.MetaDataUrl;
-            //    return new AwsService();
-            //});
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+               .AddJwtBearer(async options =>
+               {
+                   var serviceProvider = services.BuildServiceProvider();
+                   var awsService = serviceProvider.GetRequiredService<IAwsService>();
+                   var awsOptions = await awsService.GetAwsOptions();
 
-            // Options...
-            services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
-                .Configure<IAwsService>(async (options, awsService) =>
-                {
-                    var awsOptions = await awsService.GetAwsOptions();
-
-                    options.Audience = awsOptions.UserPoolClientId;
-                    options.Authority = awsOptions.MetaDataUrl;
-                });
+                   options.Audience = awsOptions.UserPoolClientId;
+                   options.Authority = awsOptions.MetaDataUrl;
+               });
 
             services.AddSwaggerGen(doc =>
             {
@@ -96,9 +98,6 @@ namespace MonitorRedCore.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 doc.IncludeXmlComments(xmlPath);
             });
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer();
 
             services.AddMvc(options =>
             {
@@ -111,7 +110,7 @@ namespace MonitorRedCore.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
