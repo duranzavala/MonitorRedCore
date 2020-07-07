@@ -1,7 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Amazon;
 using Amazon.AspNetCore.Identity.Cognito;
+using Amazon.CognitoIdentityProvider;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
+using Amazon.Runtime.Internal.Transform;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using MonitorRedCore.Core.CustomEntities;
+using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Models;
 
@@ -12,15 +20,18 @@ namespace MonitorRedCore.Infraestructure.Repositories
         private readonly SignInManager<CognitoUser> _signInManager;
         private readonly CognitoUserManager<CognitoUser> _userManager;
         private readonly CognitoUserPool _pool;
+        private readonly IAwsService _awsService;
 
         public AuthRepository(
             UserManager<CognitoUser> userManager,
             SignInManager<CognitoUser> signInManager,
-            CognitoUserPool pool)
+            CognitoUserPool pool,
+            IAwsService awsService)
         {
             _userManager = userManager as CognitoUserManager<CognitoUser>;
             _signInManager = signInManager;
             _pool = pool;
+            _awsService = awsService;
         }
 
         public async Task<bool> SignUp(Users user)
@@ -30,20 +41,35 @@ namespace MonitorRedCore.Infraestructure.Repositories
 
             var result = await _userManager.CreateAsync(userPool, user.Password);
 
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(userPool, isPersistent: false);
-            }
-
-            return true;
+            return result.Succeeded;
         }
 
-        public async Task<bool> SignIn(Users user)
+        public async Task<string> SignIn(AuthDto authDto)
         {
+            var cognito = new AmazonCognitoIdentityProviderClient(RegionEndpoint.USEast2);
+            AwsOptions awsOptions = await _awsService.GetAwsOptions();
+            var secretHash = _awsService.GetSecretHash(
+                authDto.Email,
+                awsOptions.UserPoolClientId,
+                awsOptions.UserPoolClientIdSecret
+            );
 
-            var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, true, lockoutOnFailure: false);
+            var request = new AdminInitiateAuthRequest
+            {
+                UserPoolId = awsOptions.UserPoolId,
+                ClientId = awsOptions.UserPoolClientId,
+                AuthFlow = AuthFlowType.ADMIN_NO_SRP_AUTH,
+                AuthParameters = new Dictionary<string, string>
+                {
+                    { "USERNAME", authDto.Email },
+                    { "PASSWORD", authDto.Password },
+                    { "SECRET_HASH", secretHash }
+                }
+            };
 
-            return result.Succeeded;
+            var response = await cognito.AdminInitiateAuthAsync(request);
+
+            return response.AuthenticationResult.IdToken;
         }
 
         public async Task SignOut()

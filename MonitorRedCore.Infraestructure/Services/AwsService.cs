@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 using Amazon;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
@@ -10,7 +13,6 @@ namespace MonitorRedCore.Infraestructure.Services
 {
     public class AwsService : IAwsService
     {
-        private readonly RegionEndpoint _region = RegionEndpoint.USEast2;
         private readonly AwsOptions _awsOptions;
 
         public AwsService(IOptions<AwsOptions> options)
@@ -33,7 +35,7 @@ namespace MonitorRedCore.Infraestructure.Services
 
         private async Task<string> GetAwsParameters(string parameter)
         {
-            var ssmClient = new AmazonSimpleSystemsManagementClient(_region);
+            var ssmClient = new AmazonSimpleSystemsManagementClient(RegionEndpoint.USEast2);
 
             var response = await ssmClient.GetParameterAsync(new GetParameterRequest
             {
@@ -42,6 +44,25 @@ namespace MonitorRedCore.Infraestructure.Services
             });
 
             return response.Parameter.Value;
+        }
+
+        public string GetSecretHash(string username, string appClientId, string appSecretKey)
+        {
+            var dataString = username + appClientId;
+
+            var data = Encoding.UTF8.GetBytes(dataString);
+            var key = Encoding.UTF8.GetBytes(appSecretKey);
+
+            return Convert.ToBase64String(HmacSHA256(data, key));
+        }
+
+        private byte[] HmacSHA256(byte[] data, byte[] key)
+        {
+            using (var shaAlgorithm = new HMACSHA256(key))
+            {
+                var result = shaAlgorithm.ComputeHash(data);
+                return result;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using MonitorRedCore.Core.Interfaces;
 
 namespace MonitorRedCore.API.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -17,22 +18,22 @@ namespace MonitorRedCore.API.Controllers
             _authService = authService;
         }
 
-        [HttpGet("SignIn")]
-        public async Task<IActionResult> SignIn(UserDto userDto)
+        [HttpPost("signIn")]
+        public async Task<IActionResult> SignIn(AuthDto authDto)
         {
-            var result = await _authService.SignIn(userDto);
-            var response = new ApiResponse<bool>(result);
+            var result = await _authService.SignIn(authDto);
+            var response = new ApiResponse<string>(result);
 
-            if (response.Data)
+            if (response != null)
             {
-                return Ok(response);
+                return Ok(response.Data);
             }
 
             return BadRequest(result);
         }
 
-        [HttpGet("SignOut")]
-        public async Task<ActionResult<bool>> SignOut(UserDto user)
+        [HttpGet]
+        public async Task<ActionResult<bool>> SignOut()
         {
             await _authService.SignOut();
 
