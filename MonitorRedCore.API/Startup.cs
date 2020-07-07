@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.Interfaces;
@@ -38,15 +37,6 @@ namespace MonitorRedCore.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            CognitoUserPool cognitoUserPool = new CognitoUserPool(
-                "us-east-2_WPoTAC5mP",
-                "38dhaampmunqpg0t1nla7irtt5",
-                new AmazonCognitoIdentityProviderClient(),
-                "1ruevrqlr6vke1kb42re0a4a15rnasicfi69f5jabob781ucuu5u"
-            );
-            services.AddSingleton(cognitoUserPool);
-            services.AddCognitoIdentity();
-
             services.AddControllers(options => {
                 options.Filters.Add<GlobalExceptionFilter>();
             })
@@ -59,7 +49,7 @@ namespace MonitorRedCore.API
 
             services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["LocalConnectionString"]));
 
-            // Configures...
+            // Options...
             services.Configure<AwsOptions>(Configuration.GetSection("AwsOptions"));
             services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
 
@@ -77,15 +67,25 @@ namespace MonitorRedCore.API
 
                 return new UriService(absoluteUri);
             });
-            services.AddTransient<IAwsService, AwsService>();
+            services.AddSingleton<IAwsService, AwsService>();
+
+            var serviceProvider = services.BuildServiceProvider();
+            var awsService = serviceProvider.GetRequiredService<IAwsService>();
+            var awsOptions = awsService.GetAwsOptions().Result;
+
+            CognitoUserPool cognitoUserPool = new CognitoUserPool(
+                awsOptions.UserPoolId,
+                awsOptions.UserPoolClientId,
+                new AmazonCognitoIdentityProviderClient(),
+                awsOptions.UserPoolClientIdSecret
+            );
+
+            services.AddSingleton(cognitoUserPool);
+            services.AddCognitoIdentity();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(async options =>
+               .AddJwtBearer(options =>
                {
-                   var serviceProvider = services.BuildServiceProvider();
-                   var awsService = serviceProvider.GetRequiredService<IAwsService>();
-                   var awsOptions = await awsService.GetAwsOptions();
-
                    options.Audience = awsOptions.UserPoolClientId;
                    options.Authority = awsOptions.MetaDataUrl;
                });

@@ -22,7 +22,9 @@ namespace MonitorRedCore.Infraestructure.Services
         {
             var awsOptions = new AwsOptions
             {
+                UserPoolId = await GetAwsParameters(_awsOptions.UserPoolId),
                 UserPoolClientId = await GetAwsParameters(_awsOptions.UserPoolClientId),
+                UserPoolClientIdSecret = await GetAwsParameters(_awsOptions.UserPoolClientIdSecret),
                 MetaDataUrl = await GetAwsParameters(_awsOptions.MetaDataUrl)
             };
 

@@ -105,6 +105,7 @@ namespace MonitorRedCore.API.Controllers
         /// <param name="id">User id to delete it</param>
         /// <returns></returns>
         //[Authorize]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
