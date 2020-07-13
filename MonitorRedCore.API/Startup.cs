@@ -1,8 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using Amazon;
+using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
+using Amazon.S3;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.Interfaces;
@@ -22,6 +28,7 @@ using MonitorRedCore.Infraestructure.Filters;
 using MonitorRedCore.Infraestructure.Interfaces;
 using MonitorRedCore.Infraestructure.Repositories;
 using MonitorRedCore.Infraestructure.Services;
+using Newtonsoft.Json;
 
 namespace MonitorRedCore.API
 {
@@ -87,7 +94,30 @@ namespace MonitorRedCore.API
                .AddJwtBearer(options =>
                {
                    options.Audience = awsOptions.UserPoolClientId;
-                   options.Authority = awsOptions.MetaDataUrl;
+                   // Supuestamente aqui busca los tokens generados
+                   options.Authority = $"https://cognito-idp.{RegionEndpoint.USEast2}.amazonaws.com/{awsOptions.UserPoolId}";
+                   options.RequireHttpsMetadata = false;
+
+                   // otra opcion...
+                   //options.TokenValidationParameters = new TokenValidationParameters
+                   //{
+                   //    IssuerSigningKeyResolver = (s, securityToken, identifier, parameters) =>
+                   //    {
+                   //        // get JsonWebKeySet from AWS
+                   //        var json = new WebClient().DownloadString(parameters.ValidIssuer + "/.well-known/jwks.json");
+                   //        // serialize the result
+                   //        var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(json).Keys;
+                   //        // cast the result to be the type expected by IssuerSigningKeyResolver
+                   //        return (IEnumerable<SecurityKey>)keys;
+                   //    },
+
+                   //    ValidIssuer = "https://cognito-idp.{region}.amazonaws.com/{pool ID}",
+                   //    ValidateIssuerSigningKey = true,
+                   //    ValidateIssuer = true,
+                   //    ValidateLifetime = true,
+                   //    ValidAudience = "{Cognito AppClientID}",
+                   //    ValidateAudience = true
+                   //};
                });
 
             services.AddSwaggerGen(doc =>

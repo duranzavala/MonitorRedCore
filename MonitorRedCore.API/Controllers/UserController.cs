@@ -31,7 +31,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="filters">Filter to apply</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize(Roles = "Admin")]
         [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
