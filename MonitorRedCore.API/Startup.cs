@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using Amazon;
-using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
-using Amazon.S3;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.Interfaces;
@@ -28,7 +23,6 @@ using MonitorRedCore.Infraestructure.Filters;
 using MonitorRedCore.Infraestructure.Interfaces;
 using MonitorRedCore.Infraestructure.Repositories;
 using MonitorRedCore.Infraestructure.Services;
-using Newtonsoft.Json;
 
 namespace MonitorRedCore.API
 {
