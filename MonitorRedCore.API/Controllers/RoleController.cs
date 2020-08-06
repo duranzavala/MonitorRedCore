@@ -8,7 +8,7 @@ using MonitorRedCore.Core.Interfaces;
 namespace MonitorRedCore.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("command/[controller]")]
     [ApiController]
     public class RoleController : Controller
     {

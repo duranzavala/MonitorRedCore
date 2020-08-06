@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace MonitorRedCore.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("command/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {

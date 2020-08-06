@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using Amazon;
 using Amazon.CognitoIdentityProvider;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.Interfaces;
@@ -23,6 +26,7 @@ using MonitorRedCore.Infraestructure.Filters;
 using MonitorRedCore.Infraestructure.Interfaces;
 using MonitorRedCore.Infraestructure.Repositories;
 using MonitorRedCore.Infraestructure.Services;
+using Newtonsoft.Json;
 
 namespace MonitorRedCore.API
 {
@@ -43,12 +47,12 @@ namespace MonitorRedCore.API
             })
                 .AddNewtonsoftJson((options) =>
                 {
-                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["LocalConnectionString"]));
+            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["AWSConnectionString"]));
 
             // Options...
             services.Configure<AwsOptions>(Configuration.GetSection("AwsOptions"));
@@ -84,35 +88,7 @@ namespace MonitorRedCore.API
             services.AddSingleton(cognitoUserPool);
             services.AddCognitoIdentity();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(options =>
-               {
-                   options.Audience = awsOptions.UserPoolClientId;
-                   // Supuestamente aqui busca los tokens generados
-                   options.Authority = $"https://cognito-idp.{RegionEndpoint.USEast2}.amazonaws.com/{awsOptions.UserPoolId}";
-                   options.RequireHttpsMetadata = false;
-
-                   // otra opcion...
-                   //options.TokenValidationParameters = new TokenValidationParameters
-                   //{
-                   //    IssuerSigningKeyResolver = (s, securityToken, identifier, parameters) =>
-                   //    {
-                   //        // get JsonWebKeySet from AWS
-                   //        var json = new WebClient().DownloadString(parameters.ValidIssuer + "/.well-known/jwks.json");
-                   //        // serialize the result
-                   //        var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(json).Keys;
-                   //        // cast the result to be the type expected by IssuerSigningKeyResolver
-                   //        return (IEnumerable<SecurityKey>)keys;
-                   //    },
-
-                   //    ValidIssuer = "https://cognito-idp.{region}.amazonaws.com/{pool ID}",
-                   //    ValidateIssuerSigningKey = true,
-                   //    ValidateIssuer = true,
-                   //    ValidateLifetime = true,
-                   //    ValidAudience = "{Cognito AppClientID}",
-                   //    ValidateAudience = true
-                   //};
-               });
+            ConfigureAuthentication(services, awsOptions);
 
             services.AddSwaggerGen(doc =>
             {
@@ -159,6 +135,43 @@ namespace MonitorRedCore.API
             {
                 endpoints.MapControllers();
             });
+        }
+
+        public void ConfigureAuthentication(IServiceCollection services, AwsOptions awsOptions)
+        {
+            var cognitoIssuer = $"https://cognito-idp.us-east-2.amazonaws.com/{awsOptions.UserPoolId}";
+            var jwtKeySetUrl = $"{cognitoIssuer}/.well-known/jwks.json";
+            var cognitoAudience = awsOptions.UserPoolClientId;
+
+            services
+              .AddAuthentication(options =>
+              {
+                  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+              })
+              .AddJwtBearer(options =>
+              {
+                  options.SaveToken = true;
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidIssuer = cognitoIssuer,
+                      RequireExpirationTime = true,
+                      ValidateIssuer = true,
+                      ValidateAudience = true,
+                      IssuerSigningKeyResolver = (s, securityToken, identifier, parameters) =>
+                      {
+                          // Get JsonWebKeySet from AWS
+                          var json = new WebClient().DownloadString(new Uri(jwtKeySetUrl));
+                          // cast the result to be the type expected by IssuerSigningKeyResolver
+                          var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(json).Keys;
+                          return keys;
+                      },
+                      ValidateIssuerSigningKey = true,
+                      ValidateLifetime = true,
+                      LifetimeValidator = (before, expires, token, param) => expires > DateTime.UtcNow,
+                      ValidAudience = cognitoAudience,
+                  };
+              });
         }
     }
 }

@@ -21,6 +21,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
+        "AWSConnectionString": "Data Source=monitorredcore.cnk3nocyrulp.us-east-2.rds.amazonaws.com; Initial Catalog=MONITORED; user id=duranzavala; password=planb0430;",
         "LocalConnectionString": "Data Source=localhost; Initial catalog=MONITORED; user id=sa; password=Planb0430;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
