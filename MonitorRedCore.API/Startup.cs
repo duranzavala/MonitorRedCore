@@ -74,6 +74,7 @@ namespace MonitorRedCore.API
             });
             services.AddSingleton<IAwsService, AwsService>();
 
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             var serviceProvider = services.BuildServiceProvider();
             var awsService = serviceProvider.GetRequiredService<IAwsService>();
             var awsOptions = awsService.GetAwsOptions().Result;
@@ -81,7 +82,7 @@ namespace MonitorRedCore.API
             CognitoUserPool cognitoUserPool = new CognitoUserPool(
                 awsOptions.UserPoolId,
                 awsOptions.UserPoolClientId,
-                new AmazonCognitoIdentityProviderClient(),
+                new AmazonCognitoIdentityProviderClient(RegionEndpoint.USEast2),
                 awsOptions.UserPoolClientIdSecret
             );
 
