@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  monitorredcore.api:
+  monitorredcore:
     image: ${DOCKER_REGISTRY-}monitorredcore
     build:
       context: .
