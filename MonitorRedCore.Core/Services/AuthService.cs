@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
@@ -28,7 +29,7 @@ namespace MonitorRedCore.Core.Services
             return true;
         }
 
-        public async Task<string> SignIn(AuthDto authDto)
+        public async Task<LoginResponse> SignIn(AuthDto authDto)
         {
             var result = await _unitOfWork.AuthRepository.SignIn(authDto);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.AspNetCore.Identity.Cognito;
@@ -6,6 +7,7 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Identity;
+using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
@@ -42,7 +44,7 @@ namespace MonitorRedCore.Infraestructure.Repositories
             return result.Succeeded;
         }
 
-        public async Task<string> SignIn(AuthDto authDto)
+        public async Task<LoginResponse> SignIn(AuthDto authDto)
         {
             var cognito = new AmazonCognitoIdentityProviderClient(RegionEndpoint.USEast2);
             AwsOptions awsOptions = await _awsService.GetAwsOptions();
@@ -65,9 +67,20 @@ namespace MonitorRedCore.Infraestructure.Repositories
                 }
             };
 
-            var response = await cognito.AdminInitiateAuthAsync(request);
+            var loginResult = new LoginResponse { Success = false };
 
-            return response.AuthenticationResult.IdToken;
+            try
+            {
+                var result = await cognito.AdminInitiateAuthAsync(request);
+                loginResult.Data = result.AuthenticationResult.IdToken;
+                loginResult.Success = true;
+            }
+            catch (Exception ex)
+            {
+                loginResult.Data = ex.Message;
+            }
+
+            return loginResult;
         }
 
         public async Task SignOut()

@@ -51,8 +51,8 @@ namespace MonitorRedCore.API
                 });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["AWSConnectionString"]));
+            string sql = Configuration["AWSConnectionString"];
+            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(sql));
 
             // Options...
             services.Configure<AwsOptions>(Configuration.GetSection("AwsOptions"));

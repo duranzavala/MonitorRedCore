@@ -80,8 +80,7 @@
             "dockerRun": {},
             "netCore": {
                 "appProject": "${workspaceFolder}/MonitorRedCore.API/MonitorRedCore.API.csproj",
-                "enableDebugging": true,
-                "configureSsl": false
+                "enableDebugging": true
             }
         },
         {

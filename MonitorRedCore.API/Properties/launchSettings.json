@@ -14,8 +14,6 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "AWSConnectionString": "Data Source=monitorredcore.cnk3nocyrulp.us-east-2.rds.amazonaws.com; Initial Catalog=MONITORED; user id=duranzavala; password=planb0430;",
-        "LocalConnectionString": "Data Source=localhost; Initial catalog=MONITORED; user id=sa; password=Planb0430;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -23,12 +21,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:5001",
       "environmentVariables": {
-        "AWSConnectionString": "Data Source=monitorredcore.cnk3nocyrulp.us-east-2.rds.amazonaws.com; Initial Catalog=MONITORED; user id=duranzavala; password=planb0430;",
-        "LocalConnectionString": "Data Source=localhost; Initial catalog=MONITORED; user id=sa; password=Planb0430;",
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5001"
+      }
     }
   }
 }

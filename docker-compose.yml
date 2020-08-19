@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  monitorredcore:
-    image: ${DOCKER_REGISTRY-}monitorredcore
-    build:
-      context: .
-      dockerfile: MonitorRedCore.API/Dockerfile

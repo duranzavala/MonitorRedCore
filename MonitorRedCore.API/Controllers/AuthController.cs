@@ -22,14 +22,10 @@ namespace MonitorRedCore.API.Controllers
         public async Task<IActionResult> SignIn(AuthDto authDto)
         {
             var result = await _authService.SignIn(authDto);
-            var response = new ApiResponse<string>(result);
 
-            if (response != null)
-            {
-                return Ok(response.Data);
-            }
+            var response = new ApiResponse<LoginResponse>(result);
 
-            return BadRequest(result);
+            return Ok(response);
         }
 
         [HttpGet]
