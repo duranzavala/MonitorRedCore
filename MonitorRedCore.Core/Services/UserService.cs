@@ -69,7 +69,7 @@ namespace MonitorRedCore.Core.Services
             return pagedUsers;
         }
 
-        public async Task<bool> RegisterUser(UserDto userDto)
+        public async Task<bool> SignUp(UserDto userDto)
         {
             var userExist = _unitOfWork.UserRepository.GetUserByEmail(userDto.Email);
 
@@ -81,8 +81,9 @@ namespace MonitorRedCore.Core.Services
             var user = _mapper.Map<Users>(userDto);
             await _unitOfWork.UserRepository.Add(user);
             await _unitOfWork.SaveChangesAsync();
+            var cognitoResult = await _unitOfWork.AuthRepository.SignUp(user);
 
-            return true;
+            return cognitoResult;
         }
 
         public async Task<bool> DeleteUser(int id)

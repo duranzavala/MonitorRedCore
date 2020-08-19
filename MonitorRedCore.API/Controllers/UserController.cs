@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.CustomEntities;
@@ -12,7 +13,7 @@ using Newtonsoft.Json;
 namespace MonitorRedCore.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("command/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -30,6 +31,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="filters">Filter to apply</param>
         /// <returns></returns>
+        //[Authorize(Roles = "Admin")]
         [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
@@ -62,6 +64,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="id">User id to retrieve it</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -82,12 +85,18 @@ namespace MonitorRedCore.API.Controllers
         /// <param name="userDto">Model with the required information to register a user</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(UserDto userDto)
+        public async Task<IActionResult> SignUp(UserDto userDto)
         {
-            var result = await _userService.RegisterUser(userDto);
+            var result = await _userService.SignUp(userDto);
             var response = new ApiResponse<bool>(result);
 
-            return Ok(response);
+            if (response.Data)
+            {
+               return Ok(response);
+            }
+
+
+            return BadRequest(false);
         }
 
         /// <summary>
@@ -95,6 +104,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="id">User id to delete it</param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
