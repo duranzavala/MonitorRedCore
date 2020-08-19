@@ -1,0 +1,28 @@
+﻿<Properties StartupConfiguration="{87A7FC38-6BA9-4128-81FD-12C248FE676B}|MonitorRedCore.API">
+  <MonoDevelop.Ide.ItemProperties.Test.MonitorRedCoreUnitTests PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MonitorRedCore" expanded="True">
+            <Node name="MonitorRedCore.Core" expanded="True">
+              <Node name="CustomEntities" expanded="True" />
+              <Node name="Interfaces" expanded="True" />
+              <Node name="Services" expanded="True" />
+            </Node>
+            <Node name="MonitorRedCore.Infraestructure" expanded="True">
+              <Node name="Repositories" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.MonitorRedCore.API PreferredExecutionTarget="/Applications/Safari.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
