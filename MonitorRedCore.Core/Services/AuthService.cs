@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.Extensions.Options;
 using MonitorRedCore.API.Responses;
-using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
 using MonitorRedCore.Core.Models;
@@ -20,16 +18,16 @@ namespace MonitorRedCore.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> SignUp(UserDto userDto)
+        public async Task<GenericResponse<string>> SignUp(UserDto userDto)
         {
             var user = _mapper.Map<Users>(userDto);
 
-            await _unitOfWork.AuthRepository.SignUp(user);
+            var result = await _unitOfWork.AuthRepository.SignUp(user);
 
-            return true;
+            return result;
         }
 
-        public async Task<LoginResponse> SignIn(AuthDto authDto)
+        public async Task<GenericResponse<string>> SignIn(AuthDto authDto)
         {
             var result = await _unitOfWork.AuthRepository.SignIn(authDto);
 

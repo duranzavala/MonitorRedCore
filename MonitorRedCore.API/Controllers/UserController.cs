@@ -31,7 +31,6 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="filters">Filter to apply</param>
         /// <returns></returns>
-        //[Authorize(Roles = "Admin")]
         [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
@@ -87,16 +86,9 @@ namespace MonitorRedCore.API.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(UserDto userDto)
         {
-            var result = await _userService.SignUp(userDto);
-            var response = new ApiResponse<bool>(result);
+            var response = await _userService.SignUp(userDto);
 
-            if (response.Data)
-            {
-               return Ok(response);
-            }
-
-
-            return BadRequest(false);
+            return Ok(response);
         }
 
         /// <summary>

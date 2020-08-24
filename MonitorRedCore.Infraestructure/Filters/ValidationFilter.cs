@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -10,7 +11,18 @@ namespace MonitorRedCore.Infraestructure.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                context.Result = new BadRequestObjectResult(context.ModelState);
+                var errors = context.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(v => v.ErrorMessage).AsEnumerable();
+
+                var json = new
+                {
+                    detail = errors,
+                    success = false,
+                    status = 400,
+                    title = "Bad request",
+                };
+                context.Result = new BadRequestObjectResult(json);
                 return;
             }
             await next();

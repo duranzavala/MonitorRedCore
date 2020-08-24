@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Exceptions;
@@ -69,7 +70,7 @@ namespace MonitorRedCore.Core.Services
             return pagedUsers;
         }
 
-        public async Task<bool> SignUp(UserDto userDto)
+        public async Task<GenericResponse<string>> SignUp(UserDto userDto)
         {
             var userExist = _unitOfWork.UserRepository.GetUserByEmail(userDto.Email);
 

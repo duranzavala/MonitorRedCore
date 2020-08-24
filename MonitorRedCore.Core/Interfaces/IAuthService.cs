@@ -6,8 +6,8 @@ namespace MonitorRedCore.Core.Interfaces
 {
     public interface IAuthService
     {
-        public Task<bool> SignUp(UserDto user);
-        public Task<LoginResponse> SignIn(AuthDto authDto);
+        public Task<GenericResponse<string>> SignUp(UserDto user);
+        public Task<GenericResponse<string>> SignIn(AuthDto authDto);
         public Task SignOut();
     }
 }

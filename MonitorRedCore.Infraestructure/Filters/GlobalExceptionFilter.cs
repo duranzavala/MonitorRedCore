@@ -12,16 +12,13 @@ namespace MonitorRedCore.Infraestructure.Filters
             if (context.Exception.GetType() == typeof(BusinessException))
             {
                 var exception = (BusinessException)context.Exception;
-                var validation = new
-                {
-                    Status = 400,
-                    Title = "Bad request",
-                    Detail = exception.Message,
-                };
 
                 var json = new
                 {
-                    errors = new[] { validation }
+                    detail = new[] { exception.Message },
+                    success = false,
+                    status = 400,
+                    title = "Bad request",
                 };
 
                 context.Result = new BadRequestObjectResult(json);
