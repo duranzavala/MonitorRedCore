@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +42,8 @@ namespace MonitorRedCore.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options => {
+            services.AddControllers(options =>
+            {
                 options.Filters.Add<GlobalExceptionFilter>();
             })
                 .AddNewtonsoftJson((options) =>
@@ -50,9 +51,13 @@ namespace MonitorRedCore.API
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            string sql = Configuration["AWSConnectionString"];
-            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(sql));
+            services.AddDbContext<MONITOREDContext>(options => options.UseSqlServer(Configuration["AWSConnectionString"]));
 
             // Options...
             services.Configure<AwsOptions>(Configuration.GetSection("AwsOptions"));

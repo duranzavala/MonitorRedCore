@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.CustomEntities;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.QueryFilters;
@@ -9,7 +10,7 @@ namespace MonitorRedCore.Core.Interfaces
     {
         Task<UserDto> GetUser(int id);
         PagedList<UserDto> GetUsers(UserQueryFilter filters);
-        Task<bool> SignUp(UserDto userDto);
+        Task<GenericResponse<string>> SignUp(UserDto userDto);
         Task<bool> DeleteUser(int id);
     }
 }

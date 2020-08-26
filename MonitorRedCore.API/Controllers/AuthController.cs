@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MonitorRedCore.API.Responses;
 using MonitorRedCore.Core.DTOs;
 using MonitorRedCore.Core.Interfaces;
 
@@ -21,9 +20,7 @@ namespace MonitorRedCore.API.Controllers
         [HttpPost("signIn")]
         public async Task<IActionResult> SignIn(AuthDto authDto)
         {
-            var result = await _authService.SignIn(authDto);
-
-            var response = new ApiResponse<LoginResponse>(result);
+            var response = await _authService.SignIn(authDto);
 
             return Ok(response);
         }

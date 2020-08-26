@@ -34,17 +34,32 @@ namespace MonitorRedCore.Infraestructure.Repositories
             _awsService = awsService;
         }
 
-        public async Task<bool> SignUp(Users user)
+        public async Task<GenericResponse<string>> SignUp(Users user)
         {
             var userPool = _pool.GetUser(user.Email);
             userPool.Attributes.Add(CognitoAttribute.Email.AttributeName, user.Email);
 
-            var result = await _userManager.CreateAsync(userPool, user.Password);
+            var signUpResult = new GenericResponse<string> { Success = false };
 
-            return result.Succeeded;
+            try
+            {   
+                var result = await _userManager.CreateAsync(userPool, user.Password);
+                signUpResult.Success = result.Succeeded;
+
+                if (!signUpResult.Success)
+                {
+                    signUpResult.Data = result.Errors.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                signUpResult.Data = ex.Message;
+            }
+
+            return signUpResult;
         }
 
-        public async Task<LoginResponse> SignIn(AuthDto authDto)
+        public async Task<GenericResponse<string>> SignIn(AuthDto authDto)
         {
             var cognito = new AmazonCognitoIdentityProviderClient(RegionEndpoint.USEast2);
             AwsOptions awsOptions = await _awsService.GetAwsOptions();
@@ -67,20 +82,20 @@ namespace MonitorRedCore.Infraestructure.Repositories
                 }
             };
 
-            var loginResult = new LoginResponse { Success = false };
+            var signInResult = new GenericResponse<string> { Success = false };
 
             try
             {
                 var result = await cognito.AdminInitiateAuthAsync(request);
-                loginResult.Data = result.AuthenticationResult.IdToken;
-                loginResult.Success = true;
+                signInResult.Data = result.AuthenticationResult.IdToken;
+                signInResult.Success = true;
             }
             catch (Exception ex)
             {
-                loginResult.Data = ex.Message;
+                signInResult.Data = ex.Message;
             }
 
-            return loginResult;
+            return signInResult;
         }
 
         public async Task SignOut()
