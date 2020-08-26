@@ -31,6 +31,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="filters">Filter to apply</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet(Name = nameof(GetUsers))]
         public IActionResult GetUsers([FromQuery] UserQueryFilter filters)
         {
@@ -83,7 +84,7 @@ namespace MonitorRedCore.API.Controllers
         /// </summary>
         /// <param name="userDto">Model with the required information to register a user</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("signUp")]
         public async Task<IActionResult> SignUp(UserDto userDto)
         {
             var response = await _userService.SignUp(userDto);
